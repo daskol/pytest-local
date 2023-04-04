@@ -132,10 +132,11 @@ def run(host: str, port: int, args: list[str]):
     logging.info('testing was successfully completed')
 
 
-def main(ns: Namespace):
+def main():
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                         level=logging.INFO)
 
+    ns: Namespace = parser.parse_args()
     if ns.args and ns.args[0] == '--':
         ns.args = ns.args[1:]
     if ns.listen:
@@ -170,4 +171,4 @@ parser.add_argument('args',
 
 
 if __name__ == '__main__':
-    main(parser.parse_args())
+    main()

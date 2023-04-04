@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ltest"
+authors = [
+    {name = "Daniel Bershatsky", email = "d.bershatsky2@skoltech.ru"},
+]
+description = "Simple forking server for testing with reusable context."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["testing", "local", "fork", "forking"]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Typing :: Typed",
+]
+dependencies = ["flax", "jax", "optax"]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+ltest = "ltest:main"
+
+[project.urls]
+"Source" = "https://github.com/daskol/ltest.git"
+
+[tool.isort]
+
+[tool.pytest]
+header = false
+minversion = "7"
+addopts = "-ra -q -p no:legacypath -p no:doctest -p no:junitxml -p no:pastebin"
+testpaths = []
+required_plugins = []
+
+[tool.setuptools_scm]
