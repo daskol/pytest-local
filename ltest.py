@@ -14,18 +14,23 @@ from http.client import HTTPConnection
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from json import dumps, load, loads
 from multiprocessing import get_context
+from multiprocessing.sharedctypes import Value
 from threading import Thread
 from urllib.parse import parse_qs, urlparse, urlunparse
 
 
-def run_pytest(args):
-    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                        level=logging.INFO)
-    logging.info('run pytest in in-process mode: %s', args)
-    import pytest
-    code = pytest.main(args)
-    logging.info('exit code is %s', code)
-    return code
+def run_pytest(retcode: Value, args):
+    try:
+        logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                            level=logging.INFO)
+        logging.info('run pytest in in-process mode: %s', args)
+        import pytest
+        code = pytest.main(args)
+        logging.info('pytest exit code is %s', code)
+        retcode.value = code.value
+    except Exception:
+        logging.exception('failed to execute pytest in-process')
+        raise
 
 
 class Context:
@@ -39,10 +44,14 @@ class Context:
         self.mp_context.set_forkserver_preload(self.module_names)
 
     def submit(self, fn, *args, **kwargs):
+        exitcode = Value('i', -1, lock=False)
+        args = (exitcode, ) + args
         child = self.mp_context.Process(target=fn, args=args, kwargs=kwargs)
         child.start()
         child.join()
-        return child.exitcode
+        if child.exitcode:
+            logging.info('child process failed with %d', child.exitcode)
+        return exitcode.value
 
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
