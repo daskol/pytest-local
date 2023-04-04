@@ -36,6 +36,7 @@ test = ["pytest>=7"]
 
 [project.scripts]
 ltest = "ltest:main"
+pytest-local = "ltest:main"
 
 [project.urls]
 "Source" = "https://github.com/daskol/ltest.git"
