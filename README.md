@@ -24,6 +24,7 @@ ltest -l -m preloaded_pkg -m another.preloaded.pkg
 
 ```shell
 ltest -- --co
+```
 
 #### Run Tests with Arguments on Local Server
 
