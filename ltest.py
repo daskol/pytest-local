@@ -130,12 +130,15 @@ def run(host: str, port: int, args: list[str]):
     resp = sess.getresponse()
 
     if (code := resp.getcode()) != HTTPStatus.OK:
-        logging.info('response failed with status code %d', code)
+        logging.error('response failed with status code %d', code)
         return
 
     json = load(resp)
-    if (code := json.get('code')):
-        logging.info('testing was failed with exit code %d', code)
+    if (code := json.get('code')) == 5:
+        logging.warn('there are no any tests selected')
+        return
+    elif code > 0:
+        logging.error('testing was failed with exit code %d', code)
         return
 
     logging.info('testing was successfully completed')
